@@ -94,23 +94,40 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
               </span>
             </div>
             {user?.id === post.author_id && (
-              <button
-                onClick={handleDelete}
-                disabled={isPending}
-                className="mono"
-                style={{
-                  fontSize: 11,
-                  color: 'var(--accent)',
-                  background: 'none',
-                  border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)',
-                  padding: '4px 12px',
-                  cursor: 'pointer',
-                  opacity: isPending ? 0.5 : 1,
-                  letterSpacing: '0.06em',
-                }}
-              >
-                삭제
-              </button>
+              <div style={{ display: 'flex', gap: 12 }}>
+                <button
+                  onClick={() => window.location.hash = `edit/${id}`}
+                  className="mono"
+                  style={{
+                    fontSize: 11,
+                    color: 'var(--ink-2)',
+                    background: 'none',
+                    border: '1px solid var(--rule)',
+                    padding: '4px 12px',
+                    cursor: 'pointer',
+                    letterSpacing: '0.06em',
+                  }}
+                >
+                  수정
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isPending}
+                  className="mono"
+                  style={{
+                    fontSize: 11,
+                    color: 'var(--accent)',
+                    background: 'none',
+                    border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)',
+                    padding: '4px 12px',
+                    cursor: 'pointer',
+                    opacity: isPending ? 0.5 : 1,
+                    letterSpacing: '0.06em',
+                  }}
+                >
+                  삭제
+                </button>
+              </div>
             )}
           </div>
         </header>

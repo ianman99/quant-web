@@ -64,6 +64,27 @@ export function useCreatePost() {
   })
 }
 
+export function useUpdatePost() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, post }: { id: string; post: PostInsert }) => {
+      const { data, error } = await supabase
+        .from('posts')
+        .update(post)
+        .eq('id', id)
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
+      queryClient.invalidateQueries({ queryKey: ['post', data.id] })
+    },
+  })
+}
+
 export function useDeletePost() {
   const queryClient = useQueryClient()
 

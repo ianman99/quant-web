@@ -1,26 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MDEditor from '@uiw/react-md-editor'
-import { useCreatePost } from '../../hooks/usePosts'
+import { useCreatePost, usePost, useUpdatePost } from '../../hooks/usePosts'
 import { useThemeStore } from '../../store/themeStore'
 
 interface PostEditorProps {
+  id?: string
   onCancel: () => void
   onSuccess: (id: string) => void
 }
 
-export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
+export function PostEditor({ id, onCancel, onSuccess }: PostEditorProps) {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const theme = useThemeStore((s) => s.theme)
 
-  const { mutate: createPost, isPending, error } = useCreatePost()
+  const { data: existingPost, isLoading: isFetching } = usePost(id ?? '')
+  const { mutate: createPost, isPending: isCreating } = useCreatePost()
+  const { mutate: updatePost, isPending: isUpdating } = useUpdatePost()
+
+  useEffect(() => {
+    if (existingPost) {
+      setTitle(existingPost.title)
+      setBody(existingPost.body)
+    }
+  }, [existingPost])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !body.trim()) return
-    createPost(
-      { title: title.trim(), body, category: 'research' },
-      { onSuccess: (post) => onSuccess(post.id) }
+
+    const postData = { title: title.trim(), body, category: 'research' }
+
+    if (id) {
+      updatePost(
+        { id, post: postData },
+        { onSuccess: (post) => onSuccess(post.id) }
+      )
+    } else {
+      createPost(
+        postData,
+        { onSuccess: (post) => onSuccess(post.id) }
+      )
+    }
+  }
+
+  const isPending = isCreating || isUpdating
+
+  if (id && isFetching) {
+    return (
+      <div className="wrap" style={{ paddingTop: 64, paddingBottom: 80 }}>
+        <div style={{ height: 48, background: 'var(--paper-2)', marginBottom: 48 }} />
+        <div style={{ height: 400, background: 'var(--paper-2)' }} />
+      </div>
     )
   }
 
@@ -28,11 +59,11 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
     <div className="wrap fade-in" style={{ paddingTop: 48, paddingBottom: 80 }}>
       <header style={{ marginBottom: 48 }}>
         <div className="section-eyebrow mono">
-          <span className="section-eyebrow-num">§ NEW</span>
-          <span>Draft Research Note</span>
+          <span className="section-eyebrow-num">§ {id ? 'EDIT' : 'NEW'}</span>
+          <span>{id ? 'Update Research Note' : 'Draft Research Note'}</span>
         </div>
         <h1 className="serif" style={{ fontSize: 38, margin: '16px 0 0', fontWeight: 400 }}>
-          새 글 작성.
+          {id ? '글 수정하기.' : '새 글 작성.'}
         </h1>
       </header>
 
@@ -70,10 +101,6 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
           />
         </div>
 
-        {error && (
-          <p className="mono" style={{ color: 'var(--accent)', fontSize: 12 }}>{(error as Error).message}</p>
-        )}
-
         <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end' }}>
           <button
             type="button"
@@ -106,7 +133,7 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
               opacity: isPending ? 0.5 : 1,
             }}
           >
-            {isPending ? 'PUBLISHING...' : 'PUBLISH NOTE'}
+            {isPending ? 'SAVING...' : id ? 'UPDATE NOTE' : 'PUBLISH NOTE'}
           </button>
         </div>
       </form>

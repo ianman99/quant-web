@@ -17,6 +17,7 @@ type View =
   | { type: 'community' }
   | { type: 'detail'; id: string }
   | { type: 'write' }
+  | { type: 'edit'; id: string }
 
 function parseHash(): View {
   const hash = window.location.hash.slice(1)
@@ -25,6 +26,10 @@ function parseHash(): View {
   if (hash.startsWith('post/')) {
     const id = hash.slice(5)
     if (/^[0-9a-f-]{36}$/.test(id)) return { type: 'detail', id }
+  }
+  if (hash.startsWith('edit/')) {
+    const id = hash.slice(5)
+    if (/^[0-9a-f-]{36}$/.test(id)) return { type: 'edit', id }
   }
   if (hash === 'write') return { type: 'write' }
   return { type: 'home' }
@@ -70,6 +75,13 @@ function App() {
         {view.type === 'write' && (
           <PostEditor
             onCancel={() => navigate('community')}
+            onSuccess={(id) => navigate(`post/${id}`)}
+          />
+        )}
+        {view.type === 'edit' && (
+          <PostEditor
+            id={view.id}
+            onCancel={() => navigate(`post/${view.id}`)}
             onSuccess={(id) => navigate(`post/${id}`)}
           />
         )}
