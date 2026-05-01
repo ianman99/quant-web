@@ -100,9 +100,9 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
                 className="mono"
                 style={{
                   fontSize: 11,
-                  color: '#c0392b',
+                  color: 'var(--accent)',
                   background: 'none',
-                  border: '1px solid rgba(192,57,43,0.3)',
+                  border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)',
                   padding: '4px 12px',
                   cursor: 'pointer',
                   opacity: isPending ? 0.5 : 1,
