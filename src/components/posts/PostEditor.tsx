@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import MDEditor from '@uiw/react-md-editor'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import { useCreatePost, usePost, useUpdatePost } from '../../hooks/usePosts'
 import { useThemeStore } from '../../store/themeStore'
 
@@ -97,6 +100,7 @@ export function PostEditor({ id, onCancel, onSuccess }: PostEditorProps) {
             onChange={(val) => setBody(val ?? '')}
             height={480}
             preview="live"
+            previewOptions={{ remarkPlugins: [remarkMath], rehypePlugins: [rehypeKatex] }}
             style={{ border: '1px solid var(--rule)' }}
           />
         </div>

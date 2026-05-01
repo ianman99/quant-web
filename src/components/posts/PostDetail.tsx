@@ -1,4 +1,7 @@
 import MDEditor from '@uiw/react-md-editor'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import { usePost, useDeletePost } from '../../hooks/usePosts'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
@@ -135,6 +138,8 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
         <div data-color-mode={theme}>
           <MDEditor.Markdown
             source={post.body}
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
             style={{ backgroundColor: 'transparent', color: 'var(--ink)', fontFamily: 'Inter, sans-serif' }}
           />
         </div>
