@@ -4,9 +4,8 @@ import { useAuthStore } from '../../store/authStore'
 import { CATEGORIES } from '../../types'
 import type { Post, CategoryKey } from '../../types'
 
-const WRITABLE_CATS = CATEGORIES.filter((c) => c.key !== 'all')
-
 interface PostListProps {
+  category: CategoryKey
   onPostClick: (id: string) => void
   onWriteClick: () => void
 }

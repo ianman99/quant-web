@@ -1,5 +1,4 @@
 import { SITE_DATA } from '../../data/siteData';
-import type { Post } from '../../data/siteData';
 import { PostRow } from './PostRow';
 
 interface LandingPageProps {

@@ -1,7 +1,7 @@
 import { useThemeStore } from '../../store/themeStore';
 
 export function ThemeToggle() {
-  const { theme, toggle } = useThemeStore();
+  const { toggle } = useThemeStore();
 
   return (
     <button className="theme-toggle" onClick={toggle} aria-label="Toggle theme">

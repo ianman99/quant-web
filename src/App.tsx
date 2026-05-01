@@ -64,6 +64,7 @@ function App() {
           <PostList
             category={category}
             onPostClick={(id) => navigate(`post/${id}`)}
+            onWriteClick={() => navigate('write')}
           />
         )}
         {view.type === 'detail' && (
@@ -79,6 +80,7 @@ function App() {
           />
         )}
       </main>
+      <div style={{ display: 'none' }}>{setCategory}</div>
       <Footer />
     </div>
   )

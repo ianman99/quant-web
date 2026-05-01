@@ -37,7 +37,7 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
 
   if (error || !post) {
     return (
-      <div className="wrap" style={{ paddingTop: 64, textAlign: 'center', color: 'var(--ink-3)', fontStyle: 'italic' }} className="serif">
+      <div className="wrap serif" style={{ paddingTop: 64, textAlign: 'center', color: 'var(--ink-3)', fontStyle: 'italic' }}>
         글을 불러올 수 없습니다.
       </div>
     )
