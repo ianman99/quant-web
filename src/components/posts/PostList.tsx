@@ -9,11 +9,10 @@ interface PostListProps {
 
 function PostRow({ post, onClick }: { post: Post; onClick: () => void }) {
   return (
-    <button className="post-row" onClick={onClick} style={{ gridTemplateColumns: '1fr 120px 80px 80px' }}>
+    <button className="post-row" onClick={onClick} style={{ gridTemplateColumns: '1fr 120px 100px' }}>
       <span className="post-title serif">{post.title}</span>
       <span className="post-author mono">{post.author_name}</span>
-      <span className="post-date mono">{post.created_at.slice(0, 10)}</span>
-      <span className="post-views mono" style={{ textAlign: 'right' }}>0</span>
+      <span className="post-date mono" style={{ textAlign: 'right' }}>{post.created_at.slice(0, 10)}</span>
     </button>
   )
 }
