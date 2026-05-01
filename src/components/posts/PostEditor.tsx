@@ -66,7 +66,7 @@ export function PostEditor({ id, onCancel, onSuccess }: PostEditorProps) {
           <span>{id ? 'Update Research Note' : 'Draft Research Note'}</span>
         </div>
         <h1 className="serif" style={{ fontSize: 38, margin: '16px 0 0', fontWeight: 400 }}>
-          {id ? '글 수정하기.' : '새 글 작성.'}
+          {id ? '글 수정하기' : '새 글 작성'}
         </h1>
       </header>
 
