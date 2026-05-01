@@ -22,7 +22,7 @@ export function useAuth() {
   const signIn = () =>
     supabase.auth.signInWithOAuth({
       provider: 'github',
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: window.location.origin + import.meta.env.BASE_URL },
     })
 
   const signOut = () => supabase.auth.signOut()
