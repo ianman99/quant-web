@@ -2,7 +2,6 @@ import { useState } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { useCreatePost } from '../../hooks/usePosts'
 import { useThemeStore } from '../../store/themeStore'
-import { CATEGORIES } from '../../types'
 
 interface PostEditorProps {
   onCancel: () => void

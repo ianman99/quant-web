@@ -1,8 +1,6 @@
-import { useState, useMemo } from 'react'
 import { usePosts } from '../../hooks/usePosts'
 import { useAuthStore } from '../../store/authStore'
-import { CATEGORIES } from '../../types'
-import type { Post, CategoryKey } from '../../types'
+import type { Post } from '../../types'
 
 interface PostListProps {
   onPostClick: (id: string) => void
