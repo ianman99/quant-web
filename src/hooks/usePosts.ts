@@ -3,22 +3,25 @@ import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import type { PostInsert } from '../types'
 
-export function usePosts(category: string) {
+export const PAGE_SIZE = 10
+
+export function usePosts(category: string, page = 0) {
   return useQuery({
-    queryKey: ['posts', category],
+    queryKey: ['posts', category, page],
     queryFn: async () => {
       let query = supabase
         .from('posts')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('created_at', { ascending: false })
+        .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
 
       if (category !== 'all') {
         query = query.eq('category', category)
       }
 
-      const { data, error } = await query
+      const { data, error, count } = await query
       if (error) throw error
-      return data
+      return { posts: data ?? [], total: count ?? 0 }
     },
   })
 }
