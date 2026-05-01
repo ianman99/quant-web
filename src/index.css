@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100 antialiased m-0;
+  }
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+/* react-md-editor dark theme override */
+.w-md-editor {
+  background-color: #1f2937 !important;
+  color: #f3f4f6 !important;
+}
+.w-md-editor-toolbar {
+  background-color: #111827 !important;
+  border-color: #374151 !important;
+}
+.w-md-editor-content {
+  background-color: #1f2937 !important;
+}
+.wmde-markdown {
+  background-color: transparent !important;
+  color: #f3f4f6 !important;
+}
