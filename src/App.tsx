@@ -7,7 +7,6 @@ import { PostList } from './components/posts/PostList'
 import { PostDetail } from './components/posts/PostDetail'
 import { PostEditor } from './components/posts/PostEditor'
 import { useAuth } from './hooks/useAuth'
-import type { CategoryKey } from './types'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 } },
