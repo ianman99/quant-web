@@ -23,6 +23,7 @@ function PostRow({ post, onClick }: { post: Post; onClick: () => void }) {
       <span className="post-title serif">{post.title}</span>
       <span className="post-author mono">{post.author_name}</span>
       <span className="post-date mono">{post.created_at.slice(0, 10)}</span>
+      <span className="post-views mono" style={{ textAlign: 'right' }}>0</span>
     </button>
   )
 }
@@ -39,7 +40,7 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
   }, [posts, activeFilter])
 
   return (
-    <>
+    <div className="fade-in">
       <section className="community-head">
         <div className="wrap">
           <div className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
@@ -50,7 +51,7 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
             <span style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>리서치 노트 · 백테스트 · 논의</span>
           </h1>
           <p className="community-sub">
-            멤버들이 매주 작성하는 리서치 노트, 백테스트 결과, 발제 자료, 그리고 자유로운 토론이 이곳에 누적됩니다.
+            멤버들이 매주 작성하는 리서치 노트, 백테스트 결과, 발제 자료, 그리고 자유로운 토론이 이곳에 누적됩니다. 모든 글은 동호회 내부 공유용이며, 외부 인용 시 작성자에게 문의해주세요.
           </p>
         </div>
       </section>
@@ -70,19 +71,10 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
           {user && (
             <button
               onClick={onWriteClick}
-              style={{
-                padding: '6px 16px',
-                background: 'var(--accent)',
-                color: '#fff',
-                border: 'none',
-                fontSize: 11,
-                fontFamily: 'JetBrains Mono, monospace',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-              }}
+              className="filter active mono"
+              style={{ marginLeft: '12px', background: 'var(--accent)', borderColor: 'var(--accent)' }}
             >
-              + 새 글
+              + NEW POST
             </button>
           )}
         </div>
@@ -116,22 +108,6 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
           )}
         </div>
       </div>
-
-      <footer className="footer">
-        <div className="wrap">
-          <div className="rule" style={{ marginBottom: 32 }} />
-          <div className="footer-grid">
-            <div>
-              <div className="footer-mark">Quant Lab — DX School 6</div>
-              <div style={{ marginTop: 6 }} className="mono">© 2026 · LG전자 DX SCHOOL 6기</div>
-            </div>
-            <div style={{ display: 'flex', gap: 32 }}>
-              <span className="mono">v 1.0</span>
-              <span className="mono">퀀트 투자 동호회</span>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </>
+    </div>
   )
 }

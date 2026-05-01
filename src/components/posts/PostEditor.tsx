@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { useCreatePost } from '../../hooks/usePosts'
+import { useThemeStore } from '../../store/themeStore'
 import { CATEGORIES, type CategoryKey } from '../../types'
 
 interface PostEditorProps {
@@ -13,7 +14,8 @@ const WRITABLE_CATEGORIES = CATEGORIES.filter((c) => c.key !== 'all')
 export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
-  const [category, setCategory] = useState<CategoryKey>('strategy')
+  const [category, setCategory] = useState<CategoryKey>('research')
+  const theme = useThemeStore((s) => s.theme)
 
   const { mutate: createPost, isPending, error } = useCreatePost()
 
@@ -27,31 +29,53 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
   }
 
   return (
-    <div className="p-6 max-w-4xl w-full">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-100">새 글 작성</h2>
-        <button
-          onClick={onCancel}
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-        >
-          취소
-        </button>
-      </div>
+    <div className="wrap fade-in" style={{ paddingTop: 48, paddingBottom: 80 }}>
+      <header style={{ marginBottom: 48 }}>
+        <div className="section-eyebrow mono">
+          <span className="section-eyebrow-num">§ NEW</span>
+          <span>Draft Research Note</span>
+        </div>
+        <h1 className="serif" style={{ fontSize: 38, margin: '16px 0 0', fontWeight: 400 }}>
+          새 글 작성.
+        </h1>
+      </header>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex gap-3">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', gap: 16 }}>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             required
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-md px-4 py-2.5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-sm"
+            className="serif"
+            style={{
+              flex: 1,
+              background: 'var(--paper-2)',
+              border: '1px solid var(--rule)',
+              padding: '14px 18px',
+              fontSize: 20,
+              color: 'var(--ink)',
+              outline: 'none',
+              transition: 'border-color 0.2s',
+            }}
+            onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+            onBlur={(e) => (e.target.style.borderColor = 'var(--rule)')}
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as CategoryKey)}
-            className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2.5 text-gray-100 focus:outline-none focus:border-emerald-500 text-sm"
+            className="mono"
+            style={{
+              background: 'var(--paper-2)',
+              border: '1px solid var(--rule)',
+              padding: '0 16px',
+              fontSize: 12,
+              color: 'var(--ink-2)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              outline: 'none',
+            }}
           >
             {WRITABLE_CATEGORIES.map(({ key, label }) => (
               <option key={key} value={key}>{label}</option>
@@ -59,33 +83,53 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
           </select>
         </div>
 
-        <div data-color-mode="dark">
+        <div data-color-mode={theme}>
           <MDEditor
             value={body}
             onChange={(val) => setBody(val ?? '')}
-            height={420}
+            height={480}
             preview="live"
+            style={{ border: '1px solid var(--rule)' }}
           />
         </div>
 
         {error && (
-          <p className="text-red-400 text-sm">{(error as Error).message}</p>
+          <p className="mono" style={{ color: 'var(--accent)', fontSize: 12 }}>{(error as Error).message}</p>
         )}
 
-        <div className="flex justify-end gap-3">
+        <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end' }}>
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 border border-gray-700 rounded-md transition-colors"
+            className="mono"
+            style={{
+              padding: '12px 24px',
+              fontSize: 12,
+              background: 'none',
+              border: '1px solid var(--rule)',
+              color: 'var(--ink-3)',
+              cursor: 'pointer',
+              letterSpacing: '0.06em',
+            }}
           >
-            취소
+            CANCEL
           </button>
           <button
             type="submit"
             disabled={isPending || !title.trim() || !body.trim()}
-            className="px-5 py-2 text-sm font-medium bg-emerald-500 hover:bg-emerald-400 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-gray-950 rounded-md transition-colors"
+            className="mono"
+            style={{
+              padding: '12px 32px',
+              fontSize: 12,
+              background: 'var(--ink)',
+              color: 'var(--paper)',
+              border: 'none',
+              cursor: 'pointer',
+              letterSpacing: '0.06em',
+              opacity: isPending ? 0.5 : 1,
+            }}
           >
-            {isPending ? '게시 중...' : '게시하기'}
+            {isPending ? 'PUBLISHING...' : 'PUBLISH NOTE'}
           </button>
         </div>
       </form>
