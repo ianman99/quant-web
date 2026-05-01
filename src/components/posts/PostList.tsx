@@ -1,96 +1,137 @@
+import { useState, useMemo } from 'react'
 import { usePosts } from '../../hooks/usePosts'
-import type { CategoryKey, Post } from '../../types'
+import { useAuthStore } from '../../store/authStore'
 import { CATEGORIES } from '../../types'
+import type { Post, CategoryKey } from '../../types'
+
+const WRITABLE_CATS = CATEGORIES.filter((c) => c.key !== 'all')
 
 interface PostListProps {
-  category: CategoryKey
   onPostClick: (id: string) => void
+  onWriteClick: () => void
 }
 
-function categoryLabel(key: string) {
+function catLabel(key: string) {
   return CATEGORIES.find((c) => c.key === key)?.label ?? key
 }
 
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return '방금 전'
-  if (m < 60) return `${m}분 전`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}시간 전`
-  const d = Math.floor(h / 24)
-  if (d < 30) return `${d}일 전`
-  return new Date(dateStr).toLocaleDateString('ko-KR')
-}
-
-function PostCard({ post, onClick }: { post: Post; onClick: () => void }) {
+function PostRow({ post, onClick }: { post: Post; onClick: () => void }) {
+  const label = catLabel(post.category)
   return (
-    <article
-      onClick={onClick}
-      className="border border-gray-800 rounded-lg p-4 hover:border-gray-600 hover:bg-gray-900/50 cursor-pointer transition-all"
-    >
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <h2 className="text-gray-100 font-medium text-base leading-snug line-clamp-2">
-          {post.title}
-        </h2>
-        <span className="shrink-0 text-xs text-emerald-400 border border-emerald-400/30 rounded px-2 py-0.5 bg-emerald-400/5">
-          {categoryLabel(post.category)}
-        </span>
-      </div>
-      <p className="text-gray-400 text-sm line-clamp-2 mb-3">
-        {post.body.replace(/[#*`>_~\[\]]/g, '').slice(0, 120)}
-      </p>
-      <div className="flex items-center gap-2 text-xs text-gray-500">
-        {post.author_avatar && (
-          <img src={post.author_avatar} alt="" className="w-4 h-4 rounded-full" />
-        )}
-        <span>{post.author_name}</span>
-        <span>·</span>
-        <span>{timeAgo(post.created_at)}</span>
-      </div>
-    </article>
+    <button className="post-row" onClick={onClick}>
+      <span className="post-cat mono" data-cat={label}>{label}</span>
+      <span className="post-title serif">{post.title}</span>
+      <span className="post-author mono">{post.author_name}</span>
+      <span className="post-date mono">{post.created_at.slice(0, 10)}</span>
+    </button>
   )
 }
 
-export function PostList({ category, onPostClick }: PostListProps) {
-  const { data: posts, isLoading, error } = usePosts(category)
+export function PostList({ onPostClick, onWriteClick }: PostListProps) {
+  const [activeFilter, setActiveFilter] = useState<CategoryKey>('all')
+  const { data: posts, isLoading } = usePosts('all')
+  const user = useAuthStore((s) => s.user)
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-3 p-6">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="border border-gray-800 rounded-lg p-4 animate-pulse">
-            <div className="h-4 bg-gray-800 rounded w-3/4 mb-2" />
-            <div className="h-3 bg-gray-800 rounded w-full mb-1" />
-            <div className="h-3 bg-gray-800 rounded w-2/3" />
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
-        글을 불러오는 중 오류가 발생했습니다.
-      </div>
-    )
-  }
-
-  if (!posts?.length) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 gap-2 text-gray-500">
-        <span className="text-4xl">📭</span>
-        <p>아직 글이 없습니다. 첫 글을 작성해보세요!</p>
-      </div>
-    )
-  }
+  const filtered = useMemo(() => {
+    if (!posts) return []
+    if (activeFilter === 'all') return posts
+    return posts.filter((p) => p.category === activeFilter)
+  }, [posts, activeFilter])
 
   return (
-    <div className="flex flex-col gap-3 p-6">
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} onClick={() => onPostClick(post.id)} />
-      ))}
-    </div>
+    <>
+      <section className="community-head">
+        <div className="wrap">
+          <div className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+            <span style={{ color: 'var(--accent)' }}>§ </span> Community · Reading Notes &amp; Replications
+          </div>
+          <h1 className="community-h1">
+            Community.<br />
+            <span style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>리서치 노트 · 백테스트 · 논의</span>
+          </h1>
+          <p className="community-sub">
+            멤버들이 매주 작성하는 리서치 노트, 백테스트 결과, 발제 자료, 그리고 자유로운 토론이 이곳에 누적됩니다.
+          </p>
+        </div>
+      </section>
+
+      <div className="wrap">
+        <div className="filters">
+          {CATEGORIES.map((c) => (
+            <button
+              key={c.key}
+              className={`filter mono${activeFilter === c.key ? ' active' : ''}`}
+              onClick={() => setActiveFilter(c.key as CategoryKey)}
+            >
+              {c.label}
+            </button>
+          ))}
+          <span className="posts-count mono">{filtered.length} entries</span>
+          {user && (
+            <button
+              onClick={onWriteClick}
+              style={{
+                padding: '6px 16px',
+                background: 'var(--accent)',
+                color: '#fff',
+                border: 'none',
+                fontSize: 11,
+                fontFamily: 'JetBrains Mono, monospace',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              + 새 글
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="wrap" style={{ paddingTop: 0, paddingBottom: 80 }}>
+        <div className="posts-list">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  height: 57,
+                  borderBottom: '1px solid var(--rule)',
+                  background: 'var(--paper-2)',
+                  opacity: 1 - i * 0.12,
+                }}
+              />
+            ))
+          ) : filtered.length === 0 ? (
+            <div
+              style={{ padding: '64px 0', textAlign: 'center', color: 'var(--ink-3)', fontStyle: 'italic' }}
+              className="serif"
+            >
+              해당 카테고리의 글이 아직 없습니다.
+            </div>
+          ) : (
+            filtered.map((post) => (
+              <PostRow key={post.id} post={post} onClick={() => onPostClick(post.id)} />
+            ))
+          )}
+        </div>
+      </div>
+
+      <footer className="footer">
+        <div className="wrap">
+          <div className="rule" style={{ marginBottom: 32 }} />
+          <div className="footer-grid">
+            <div>
+              <div className="footer-mark">Quant Lab — DX School 6</div>
+              <div style={{ marginTop: 6 }} className="mono">© 2026 · LG전자 DX SCHOOL 6기</div>
+            </div>
+            <div style={{ display: 'flex', gap: 32 }}>
+              <span className="mono">v 1.0</span>
+              <span className="mono">퀀트 투자 동호회</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
   )
 }

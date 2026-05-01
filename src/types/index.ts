@@ -13,11 +13,12 @@ export interface Post {
 export type PostInsert = Pick<Post, 'title' | 'body' | 'category'>
 
 export const CATEGORIES = [
-  { key: 'all', label: '전체 글' },
-  { key: 'strategy', label: '전략 공유' },
-  { key: 'data', label: '데이터 분석' },
-  { key: 'discussion', label: '질문 · 토론' },
-  { key: 'news', label: '시장 뉴스' },
+  { key: 'all', label: 'All' },
+  { key: 'research', label: 'Research' },
+  { key: 'backtest', label: 'Backtest' },
+  { key: 'paper', label: 'Paper' },
+  { key: 'note', label: 'Note' },
+  { key: 'discussion', label: 'Discussion' },
 ] as const
 
 export type CategoryKey = (typeof CATEGORIES)[number]['key']

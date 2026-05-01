@@ -1,6 +1,7 @@
 import MDEditor from '@uiw/react-md-editor'
 import { usePost, useDeletePost } from '../../hooks/usePosts'
 import { useAuthStore } from '../../store/authStore'
+import { useThemeStore } from '../../store/themeStore'
 import { CATEGORIES } from '../../types'
 
 interface PostDetailProps {
@@ -8,13 +9,14 @@ interface PostDetailProps {
   onBack: () => void
 }
 
-function categoryLabel(key: string) {
+function catLabel(key: string) {
   return CATEGORIES.find((c) => c.key === key)?.label ?? key
 }
 
 export function PostDetail({ id, onBack }: PostDetailProps) {
   const { data: post, isLoading, error } = usePost(id)
   const user = useAuthStore((s) => s.user)
+  const theme = useThemeStore((s) => s.theme)
   const { mutate: deletePost, isPending } = useDeletePost()
 
   const handleDelete = () => {
@@ -24,64 +26,111 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
 
   if (isLoading) {
     return (
-      <div className="p-6 animate-pulse">
-        <div className="h-6 bg-gray-800 rounded w-1/2 mb-4" />
-        <div className="h-4 bg-gray-800 rounded w-full mb-2" />
-        <div className="h-4 bg-gray-800 rounded w-5/6" />
+      <div className="wrap" style={{ paddingTop: 64, paddingBottom: 80 }}>
+        <div style={{ height: 20, background: 'var(--paper-2)', borderRadius: 2, width: '40%', marginBottom: 48 }} />
+        <div style={{ height: 36, background: 'var(--paper-2)', borderRadius: 2, width: '70%', marginBottom: 16 }} />
+        <div style={{ height: 16, background: 'var(--paper-2)', borderRadius: 2, width: '100%', marginBottom: 8 }} />
+        <div style={{ height: 16, background: 'var(--paper-2)', borderRadius: 2, width: '83%' }} />
       </div>
     )
   }
 
   if (error || !post) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="wrap" style={{ paddingTop: 64, textAlign: 'center', color: 'var(--ink-3)', fontStyle: 'italic' }} className="serif">
         글을 불러올 수 없습니다.
       </div>
     )
   }
 
+  const label = catLabel(post.category)
+
   return (
-    <article className="p-6 max-w-4xl">
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-200 mb-6 transition-colors"
-      >
-        ← 목록으로
-      </button>
+    <article style={{ paddingBottom: 80 }}>
+      <div className="wrap" style={{ paddingTop: 48 }}>
+        <button
+          onClick={onBack}
+          className="mono"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+            color: 'var(--ink-3)',
+            fontSize: 12,
+            letterSpacing: '0.06em',
+            marginBottom: 48,
+          }}
+        >
+          ← Community
+        </button>
 
-      <header className="mb-6 pb-4 border-b border-gray-800">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xs text-emerald-400 border border-emerald-400/30 rounded px-2 py-0.5 bg-emerald-400/5">
-            {categoryLabel(post.category)}
-          </span>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-100 mb-3">{post.title}</h1>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            {post.author_avatar && (
-              <img src={post.author_avatar} alt="" className="w-5 h-5 rounded-full" />
-            )}
-            <span>{post.author_name}</span>
-            <span>·</span>
-            <span>{new Date(post.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <header style={{ marginBottom: 48, paddingBottom: 32, borderBottom: '1px solid var(--rule)' }}>
+          <div style={{ marginBottom: 16 }}>
+            <span className="post-cat mono" data-cat={label}>{label}</span>
           </div>
-          {user?.id === post.author_id && (
-            <button
-              onClick={handleDelete}
-              disabled={isPending}
-              className="text-xs text-red-400 hover:text-red-300 border border-red-400/30 rounded px-3 py-1 transition-colors disabled:opacity-50"
+          <h1
+            style={{
+              fontFamily: 'Newsreader, serif',
+              fontSize: 'clamp(24px, 4vw, 42px)',
+              letterSpacing: '-0.025em',
+              lineHeight: 1.15,
+              margin: '0 0 24px',
+              fontWeight: 400,
+              color: 'var(--ink)',
+            }}
+          >
+            {post.title}
+          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div
+              className="mono"
+              style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12, color: 'var(--ink-3)' }}
             >
-              삭제
-            </button>
-          )}
-        </div>
-      </header>
+              {post.author_avatar && (
+                <img src={post.author_avatar} alt="" style={{ width: 22, height: 22, borderRadius: '50%' }} />
+              )}
+              <span>{post.author_name}</span>
+              <span>·</span>
+              <span>
+                {new Date(post.created_at).toLocaleDateString('ko-KR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
+            </div>
+            {user?.id === post.author_id && (
+              <button
+                onClick={handleDelete}
+                disabled={isPending}
+                className="mono"
+                style={{
+                  fontSize: 11,
+                  color: '#c0392b',
+                  background: 'none',
+                  border: '1px solid rgba(192,57,43,0.3)',
+                  padding: '4px 12px',
+                  cursor: 'pointer',
+                  opacity: isPending ? 0.5 : 1,
+                  letterSpacing: '0.06em',
+                }}
+              >
+                삭제
+              </button>
+            )}
+          </div>
+        </header>
 
-      <div data-color-mode="dark">
-        <MDEditor.Markdown
-          source={post.body}
-          style={{ backgroundColor: 'transparent', color: '#f3f4f6' }}
-        />
+        <div data-color-mode={theme}>
+          <MDEditor.Markdown
+            source={post.body}
+            style={{ backgroundColor: 'transparent', color: 'var(--ink)', fontFamily: 'Inter, sans-serif' }}
+          />
+        </div>
       </div>
     </article>
   )
