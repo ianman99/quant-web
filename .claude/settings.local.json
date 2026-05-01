@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//c/Users/6155/.claude/**)",
-      "Bash(curl -s https://api.supabase.com/v1/projects/sbfmuibvuwvehwcwpiei/api-keys -H 'Authorization: Bearer sbp_f162eb700b16bf16269dcb7468f5e74b61082369')",
-      "Bash(python -m json.tool)"
-    ]
-  }
-}
