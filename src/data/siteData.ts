@@ -16,9 +16,8 @@ export const SITE_DATA = {
     nameEn: "Quantitative Investment Society",
     tagline: "데이터로 시장을 읽고, 코드로 가설을 검증한다.",
     taglineEn: "Read the market with data, verify hypotheses with code.",
-    founded: "2025",
-    cohort: "6th Cohort",
-    members: 18,
+    founded: "2026",
+    members: 4,
   },
 
   about: [
@@ -43,10 +42,10 @@ export const SITE_DATA = {
   ],
 
   stats: [
-    { k: "Members", v: "18", note: "DX School 6기" },
-    { k: "Sessions", v: "24", note: "since 2025.03" },
-    { k: "Papers", v: "31", note: "reviewed & replicated" },
-    { k: "Strategies", v: "12", note: "backtested" },
+    { k: "Members", v: "4", note: "LG전자 DX School 6기" },
+    { k: "Sessions", v: "1", note: "since 2026.04" },
+    { k: "Papers", v: "0", note: "reviewed & replicated" },
+    { k: "Strategies", v: "1", note: "backtested" },
   ],
 
   curriculum: [

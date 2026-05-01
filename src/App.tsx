@@ -53,10 +53,7 @@ function App() {
       />
       <main className="flex-1">
         {view.type === 'home' && (
-          <LandingPage 
-            onNavigate={navigate} 
-            onPostClick={(id) => navigate(`post/${id}`)}
-          />
+          <LandingPage />
         )}
         {view.type === 'community' && (
           <PostList

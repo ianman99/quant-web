@@ -11,19 +11,18 @@ export function Nav({ active, onNavigate }: NavProps) {
     <nav className="nav">
       <div className="wrap nav-inner" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
         <button onClick={() => onNavigate('')} className="nav-brand" style={{ justifySelf: 'start' }}>
-          <span className="nav-brand-mark">Quant Lab</span>
-          <span className="nav-brand-sub mono">DX SCHOOL · 6th</span>
+          <span className="nav-brand-mark">Quant Club</span>
         </button>
 
         <div className="nav-links" style={{ justifySelf: 'center' }}>
-          <button 
-            onClick={() => onNavigate('')} 
+          <button
+            onClick={() => onNavigate('')}
             className={"nav-link " + (active === 'home' ? 'active' : '')}
           >
             Home
           </button>
-          <button 
-            onClick={() => onNavigate('community')} 
+          <button
+            onClick={() => onNavigate('community')}
             className={"nav-link " + (active === 'community' ? 'active' : '')}
           >
             Community

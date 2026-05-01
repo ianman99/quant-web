@@ -27,13 +27,10 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
       <section className="community-head">
         <div className="wrap">
           <div className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-            <span style={{ color: 'var(--accent)' }}>§ </span> Community · Reading Notes &amp; Replications
+            <span style={{ color: 'var(--accent)' }}>§ </span> Community · Studies &amp; Strategies
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-            <h1 className="community-h1">
-              Community.<br />
-              <span style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>리서치 노트 · 백테스트 · 논의</span>
-            </h1>
+            <h1 className="community-h1">Community</h1>
             {user && (
               <button
                 onClick={onWriteClick}
@@ -45,7 +42,7 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
             )}
           </div>
           <p className="community-sub">
-            멤버들이 매주 작성하는 리서치 노트, 백테스트 결과, 발제 자료, 그리고 자유로운 토론이 이곳에 누적됩니다. 모든 글은 동호회 내부 공유용이며, 외부 인용 시 작성자에게 문의해주세요.
+            멤버들이 작성하는 리서치 노트, 백테스트 결과, 스터디 자료, 그리고 자유로운 토론이 이곳에 작성됩니다. 모든 글은 동호회 내부 공유용이며, 외부 인용 시 작성자에게 문의해주세요.
           </p>
         </div>
       </section>
