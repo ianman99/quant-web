@@ -35,7 +35,6 @@ function App() {
   useAuth()
 
   const [view, setView] = useState<View>(parseHash)
-  const [category, setCategory] = useState<CategoryKey>('all')
 
   useEffect(() => {
     const handler = () => setView(parseHash())
@@ -62,7 +61,6 @@ function App() {
         )}
         {view.type === 'community' && (
           <PostList
-            category={category}
             onPostClick={(id) => navigate(`post/${id}`)}
             onWriteClick={() => navigate('write')}
           />
@@ -80,7 +78,6 @@ function App() {
           />
         )}
       </main>
-      <div style={{ display: 'none' }}>{setCategory}</div>
       <Footer />
     </div>
   )

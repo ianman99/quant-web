@@ -5,7 +5,6 @@ import { CATEGORIES } from '../../types'
 import type { Post, CategoryKey } from '../../types'
 
 interface PostListProps {
-  category: CategoryKey
   onPostClick: (id: string) => void
   onWriteClick: () => void
 }
