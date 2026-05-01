@@ -2,19 +2,16 @@ import { useState } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { useCreatePost } from '../../hooks/usePosts'
 import { useThemeStore } from '../../store/themeStore'
-import { CATEGORIES, type CategoryKey } from '../../types'
+import { CATEGORIES } from '../../types'
 
 interface PostEditorProps {
   onCancel: () => void
   onSuccess: (id: string) => void
 }
 
-const WRITABLE_CATEGORIES = CATEGORIES.filter((c) => c.key !== 'all')
-
 export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
-  const [category, setCategory] = useState<CategoryKey>('research')
   const theme = useThemeStore((s) => s.theme)
 
   const { mutate: createPost, isPending, error } = useCreatePost()
@@ -23,7 +20,7 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
     e.preventDefault()
     if (!title.trim() || !body.trim()) return
     createPost(
-      { title: title.trim(), body, category },
+      { title: title.trim(), body, category: 'research' },
       { onSuccess: (post) => onSuccess(post.id) }
     )
   }
@@ -62,25 +59,6 @@ export function PostEditor({ onCancel, onSuccess }: PostEditorProps) {
             onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
             onBlur={(e) => (e.target.style.borderColor = 'var(--rule)')}
           />
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value as CategoryKey)}
-            className="mono"
-            style={{
-              background: 'var(--paper-2)',
-              border: '1px solid var(--rule)',
-              padding: '0 16px',
-              fontSize: 12,
-              color: 'var(--ink-2)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              outline: 'none',
-            }}
-          >
-            {WRITABLE_CATEGORIES.map(({ key, label }) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
         </div>
 
         <div data-color-mode={theme}>

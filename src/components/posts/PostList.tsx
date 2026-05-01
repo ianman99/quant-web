@@ -9,15 +9,9 @@ interface PostListProps {
   onWriteClick: () => void
 }
 
-function catLabel(key: string) {
-  return CATEGORIES.find((c) => c.key === key)?.label ?? key
-}
-
 function PostRow({ post, onClick }: { post: Post; onClick: () => void }) {
-  const label = catLabel(post.category)
   return (
-    <button className="post-row" onClick={onClick}>
-      <span className="post-cat mono" data-cat={label}>{label}</span>
+    <button className="post-row" onClick={onClick} style={{ gridTemplateColumns: '1fr 120px 80px 80px' }}>
       <span className="post-title serif">{post.title}</span>
       <span className="post-author mono">{post.author_name}</span>
       <span className="post-date mono">{post.created_at.slice(0, 10)}</span>
@@ -27,15 +21,8 @@ function PostRow({ post, onClick }: { post: Post; onClick: () => void }) {
 }
 
 export function PostList({ onPostClick, onWriteClick }: PostListProps) {
-  const [activeFilter, setActiveFilter] = useState<CategoryKey>('all')
   const { data: posts, isLoading } = usePosts('all')
   const user = useAuthStore((s) => s.user)
-
-  const filtered = useMemo(() => {
-    if (!posts) return []
-    if (activeFilter === 'all') return posts
-    return posts.filter((p) => p.category === activeFilter)
-  }, [posts, activeFilter])
 
   return (
     <div className="fade-in">
@@ -44,10 +31,21 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
           <div className="mono" style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
             <span style={{ color: 'var(--accent)' }}>§ </span> Community · Reading Notes &amp; Replications
           </div>
-          <h1 className="community-h1">
-            Community.<br />
-            <span style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>리서치 노트 · 백테스트 · 논의</span>
-          </h1>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <h1 className="community-h1">
+              Community.<br />
+              <span style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>리서치 노트 · 백테스트 · 논의</span>
+            </h1>
+            {user && (
+              <button
+                onClick={onWriteClick}
+                className="filter active mono"
+                style={{ marginBottom: '8px', background: 'var(--accent)', borderColor: 'var(--accent)' }}
+              >
+                + NEW POST
+              </button>
+            )}
+          </div>
           <p className="community-sub">
             멤버들이 매주 작성하는 리서치 노트, 백테스트 결과, 발제 자료, 그리고 자유로운 토론이 이곳에 누적됩니다. 모든 글은 동호회 내부 공유용이며, 외부 인용 시 작성자에게 문의해주세요.
           </p>
@@ -55,31 +53,13 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
       </section>
 
       <div className="wrap">
-        <div className="filters">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c.key}
-              className={`filter mono${activeFilter === c.key ? ' active' : ''}`}
-              onClick={() => setActiveFilter(c.key as CategoryKey)}
-            >
-              {c.label}
-            </button>
-          ))}
-          <span className="posts-count mono">{filtered.length} entries</span>
-          {user && (
-            <button
-              onClick={onWriteClick}
-              className="filter active mono"
-              style={{ marginLeft: '12px', background: 'var(--accent)', borderColor: 'var(--accent)' }}
-            >
-              + NEW POST
-            </button>
-          )}
+        <div className="filters" style={{ borderBottom: '1px solid var(--ink)', paddingBottom: '12px' }}>
+          <span className="posts-count mono" style={{ marginLeft: 0 }}>{posts?.length ?? 0} entries</span>
         </div>
       </div>
 
       <div className="wrap" style={{ paddingTop: 0, paddingBottom: 80 }}>
-        <div className="posts-list">
+        <div className="posts-list" style={{ borderTop: 'none' }}>
           {isLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <div
@@ -92,15 +72,15 @@ export function PostList({ onPostClick, onWriteClick }: PostListProps) {
                 }}
               />
             ))
-          ) : filtered.length === 0 ? (
+          ) : !posts || posts.length === 0 ? (
             <div
               style={{ padding: '64px 0', textAlign: 'center', color: 'var(--ink-3)', fontStyle: 'italic' }}
               className="serif"
             >
-              해당 카테고리의 글이 아직 없습니다.
+              게시글이 아직 없습니다.
             </div>
           ) : (
-            filtered.map((post) => (
+            posts.map((post) => (
               <PostRow key={post.id} post={post} onClick={() => onPostClick(post.id)} />
             ))
           )}

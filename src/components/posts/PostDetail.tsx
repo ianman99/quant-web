@@ -2,15 +2,10 @@ import MDEditor from '@uiw/react-md-editor'
 import { usePost, useDeletePost } from '../../hooks/usePosts'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
-import { CATEGORIES } from '../../types'
 
 interface PostDetailProps {
   id: string
   onBack: () => void
-}
-
-function catLabel(key: string) {
-  return CATEGORIES.find((c) => c.key === key)?.label ?? key
 }
 
 export function PostDetail({ id, onBack }: PostDetailProps) {
@@ -43,8 +38,6 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
     )
   }
 
-  const label = catLabel(post.category)
-
   return (
     <article style={{ paddingBottom: 80 }}>
       <div className="wrap" style={{ paddingTop: 48 }}>
@@ -69,9 +62,6 @@ export function PostDetail({ id, onBack }: PostDetailProps) {
         </button>
 
         <header style={{ marginBottom: 48, paddingBottom: 32, borderBottom: '1px solid var(--rule)' }}>
-          <div style={{ marginBottom: 16 }}>
-            <span className="post-cat mono" data-cat={label}>{label}</span>
-          </div>
           <h1
             style={{
               fontFamily: 'Newsreader, serif',
