@@ -9,12 +9,13 @@ interface NavProps {
 export function Nav({ active, onNavigate }: NavProps) {
   return (
     <nav className="nav">
-      <div className="wrap nav-inner">
-        <button onClick={() => onNavigate('')} className="nav-brand">
+      <div className="wrap nav-inner" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
+        <button onClick={() => onNavigate('')} className="nav-brand" style={{ justifySelf: 'start' }}>
           <span className="nav-brand-mark">Quant Lab</span>
           <span className="nav-brand-sub mono">DX SCHOOL · 6th</span>
         </button>
-        <div className="nav-links">
+
+        <div className="nav-links" style={{ justifySelf: 'center' }}>
           <button 
             onClick={() => onNavigate('')} 
             className={"nav-link " + (active === 'home' ? 'active' : '')}
@@ -27,10 +28,11 @@ export function Nav({ active, onNavigate }: NavProps) {
           >
             Community
           </button>
-          <div style={{ marginLeft: '12px', display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <AuthButton />
-            <ThemeToggle />
-          </div>
+        </div>
+
+        <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <AuthButton />
+          <ThemeToggle />
         </div>
       </div>
     </nav>

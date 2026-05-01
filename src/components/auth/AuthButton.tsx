@@ -4,18 +4,25 @@ export function AuthButton() {
   const { user, signIn, signOut } = useAuth()
 
   if (user) {
+    const nickname = user.user_metadata?.full_name || user.user_metadata?.user_name || user.email;
     return (
-      <div className="flex items-center gap-3">
+      <>
         {user.user_metadata?.avatar_url && (
           <img
             src={user.user_metadata.avatar_url}
             alt="avatar"
             className="w-8 h-8 rounded-full"
-            style={{ border: '1px solid var(--rule)' }}
+            style={{ border: '1px solid var(--rule)', display: 'block' }}
           />
         )}
-        <span className="mono sm:block" style={{ fontSize: '13px', color: 'var(--ink-2)', display: 'none' }}>
-          {user.user_metadata?.user_name ?? user.email}
+        <span className="mono" style={{ 
+          fontSize: '13px', 
+          color: 'var(--ink-2)', 
+          display: 'block',
+          whiteSpace: 'nowrap',
+          minWidth: 'max-content'
+        }}>
+          {nickname}
         </span>
         <button
           onClick={signOut}
@@ -27,12 +34,13 @@ export function AuthButton() {
             background: 'none',
             padding: '4px 12px',
             cursor: 'pointer',
-            letterSpacing: '0.04em'
+            letterSpacing: '0.04em',
+            whiteSpace: 'nowrap'
           }}
         >
           LOGOUT
         </button>
-      </div>
+      </>
     )
   }
 
